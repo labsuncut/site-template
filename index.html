@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rosa's Bakery | Fresh bread and pastries in Springfield, NJ</title>
+  <meta name="description" content="Fresh bread, pastries and custom cakes baked every morning on Main Street in Springfield, NJ. Call (555) 010-0199.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/site.css">
+  <!-- Facts for Google search results. Keep in sync with business.json. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Bakery",
+    "name": "Rosa's Bakery",
+    "telephone": "+1-555-010-0199",
+    "email": "hello@example.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "123 Main Street",
+      "addressLocality": "Springfield",
+      "addressRegion": "NJ",
+      "postalCode": "07081",
+      "addressCountry": "US"
+    },
+    "openingHours": ["Mo-Fr 07:00-18:00", "Sa 08:00-16:00"]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="logo" href="#top">Rosa's Bakery</a>
+      <nav class="nav">
+        <a href="#services">What we do</a>
+        <a href="#about">About</a>
+        <a href="#visit">Visit</a>
+        <a class="btn btn-small" href="tel:+15550100199">Call</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Bakery in Springfield, NJ</p>
+        <h1>Fresh bread and pastries, baked every morning since 1998</h1>
+        <div class="hero-actions">
+          <a class="btn" href="tel:+15550100199">Call (555) 010-0199</a>
+          <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=123+Main+Street+Springfield+NJ+07081">Get directions</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="section">
+      <div class="wrap">
+        <h2>What we do</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Fresh bread</h3>
+            <p>Sourdough, rye and baguettes from our ovens every morning.</p>
+          </article>
+          <article class="card">
+            <h3>Pastries</h3>
+            <p>Croissants, danishes and seasonal tarts.</p>
+          </article>
+          <article class="card">
+            <h3>Custom cakes</h3>
+            <p>Birthdays, weddings and parties. Order three days ahead.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section section-tint">
+      <div class="wrap split">
+        <div>
+          <h2>About us</h2>
+          <p>Rosa opened the bakery in 1998 with her grandmother's recipes. Everything is still made by hand, in small batches, right here on Main Street.</p>
+        </div>
+        <!-- PLACEHOLDER photo area. Replace with assets/img/photo-1.jpg once the client sends real photos. -->
+        <div class="photo-placeholder" role="img" aria-label="Photo of the shop"></div>
+      </div>
+    </section>
+
+    <section id="reviews" class="section">
+      <div class="wrap">
+        <h2>What customers say</h2>
+        <!-- Only use real reviews the business has received (e.g. from their Google listing). Never invent them. -->
+        <div class="cards">
+          <blockquote class="card quote">
+            <p>"Best sourdough in town. I come every Saturday."</p>
+            <cite>Example reviewer</cite>
+          </blockquote>
+          <blockquote class="card quote">
+            <p>"Ordered a birthday cake and it was perfect."</p>
+            <cite>Example reviewer</cite>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <section id="visit" class="section section-tint">
+      <div class="wrap split">
+        <div>
+          <h2>Visit us</h2>
+          <p class="address">123 Main Street<br>Springfield, NJ 07081</p>
+          <table class="hours">
+            <tr><th>Mon to Fri</th><td>7:00 AM to 6:00 PM</td></tr>
+            <tr><th>Saturday</th><td>8:00 AM to 4:00 PM</td></tr>
+            <tr><th>Sunday</th><td>Closed</td></tr>
+          </table>
+          <p>
+            <a href="tel:+15550100199">(555) 010-0199</a><br>
+            <a href="mailto:hello@example.com">hello@example.com</a>
+          </p>
+        </div>
+        <iframe class="map" title="Map to Rosa's Bakery" loading="lazy"
+          src="https://www.google.com/maps?q=123+Main+Street+Springfield+NJ+07081&amp;output=embed"></iframe>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>&copy; <span id="year">2026</span> Rosa's Bakery &middot; 123 Main Street, Springfield, NJ</p>
+    </div>
+  </footer>
+
+  <!-- Sticky call button on phones -->
+  <a class="call-bar" href="tel:+15550100199">Call Rosa's Bakery</a>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
