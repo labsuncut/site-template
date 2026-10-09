@@ -1,0 +1,40 @@
+{
+  "_note": "Every fact about the business lives here. Claude fills this first, then writes the pages from it. The values below are a made-up example business.",
+  "name": "Rosa's Bakery",
+  "tagline": "Fresh bread and pastries, baked every morning since 1998",
+  "category": "Bakery",
+  "phone": "(555) 010-0199",
+  "email": "hello@example.com",
+  "address": {
+    "street": "123 Main Street",
+    "city": "Springfield",
+    "region": "NJ",
+    "postal": "07081"
+  },
+  "hours": [
+    { "days": "Mon to Fri", "open": "7:00 AM", "close": "6:00 PM" },
+    { "days": "Saturday", "open": "8:00 AM", "close": "4:00 PM" },
+    { "days": "Sunday", "open": "Closed", "close": "" }
+  ],
+  "services": [
+    { "name": "Fresh bread", "description": "Sourdough, rye and baguettes from our ovens every morning." },
+    { "name": "Pastries", "description": "Croissants, danishes and seasonal tarts." },
+    { "name": "Custom cakes", "description": "Birthdays, weddings and parties. Order three days ahead." }
+  ],
+  "about": "Rosa opened the bakery in 1998 with her grandmother's recipes. Everything is still made by hand, in small batches, right here on Main Street.",
+  "reviews": [
+    { "quote": "Best sourdough in town. I come every Saturday.", "author": "Example reviewer" },
+    { "quote": "Ordered a birthday cake and it was perfect.", "author": "Example reviewer" }
+  ],
+  "colors": {
+    "brand": "#8a3b12",
+    "accent": "#f2b544"
+  },
+  "links": {
+    "google": "",
+    "instagram": "",
+    "facebook": "",
+    "order": ""
+  },
+  "domain": ""
+}
