@@ -54,8 +54,8 @@ with tempfile.TemporaryDirectory() as tmp:
     for p in clean.rglob("*"):
         if p.is_file() and p.suffix in {".html", ".json", ".md", ".css", ".js"}:
             t = p.read_text()
-            for a, b in [("Rosa's Bakery", "Test Cafe"), ("Rosa", "Sami"), ("(555) 010-0199", "06 555 1234"), ("+1-555-010-0199", "+96265551234"),
-                         ("+15550100199", "+96265551234"), ("555-010-0199", "06 555 1234"), ("Springfield", "Amman"), ("example.com", "testcafe.jo"),
+            for a, b in [("Rosa's Bakery", "Test Cafe"), ("Rosa", "Sami"), ("(555) 010-0199", "06 000 0000"), ("+1-555-010-0199", "+96260000000"),
+                         ("+15550100199", "+96260000000"), ("555-010-0199", "06 000 0000"), ("Springfield", "Amman"), ("example.com", "test-cafe.invalid"),
                          ("123 Main Street", "1 Rainbow St"), ("Main Street", "Rainbow St"), ("Example reviewer", "Lina")]:
                 t = t.replace(a, b)
             p.write_text(t)
@@ -66,7 +66,7 @@ with tempfile.TemporaryDirectory() as tmp:
     index = clean / "index.html"
     base = index.read_text()
 
-    index.write_text(base.replace('href="tel:+96265551234"', 'href="tel:06 555 1234"', 1))
+    index.write_text(base.replace('href="tel:+96260000000"', 'href="tel:06 000 0000"', 1))
     expect("tel link without country code is a FAIL", "tel-format" in codes(sc.check(clean), "FAIL"))
 
     index.write_text(base.replace('href="assets/', 'href="/assets/', 1))
