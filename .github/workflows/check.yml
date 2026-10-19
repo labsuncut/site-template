@@ -1,4 +1,5 @@
-# Runs on every push and pull request: checks that no link on the site is broken.
+# Runs on every push and pull request: checks that no link on the site is broken and that the
+# site follows the build rules in CLAUDE.md (tools/site-check.py).
 name: Site checks
 on:
   push:
@@ -14,3 +15,12 @@ jobs:
         with:
           args: --offline --no-progress './**/*.html'
           fail: true
+  rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test the rule checker itself (template repo only)
+        if: github.repository == 'labsuncut/site-template'
+        run: python3 tools/test_site_check.py
+      - name: Check the site against the build rules in CLAUDE.md
+        run: python3 tools/site-check.py

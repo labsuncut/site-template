@@ -26,11 +26,14 @@ The stack is plain HTML and CSS with no build step, hosted on GitHub Pages. Keep
 
 ## Before handing back for review
 
+- Run `python3 tools/site-check.py` and fix every FAIL; look at each WARN. CI runs it on every change too. It reads the files only, so it does not replace the Staff Dashboard checks.
 - Screenshot the site at phone (375px) and desktop (1280px) width and share both.
 - Check that every link works and the call button dials the right number.
 - Give the preview link: `https://labsuncut.github.io/<repo-name>/`.
 
 ## When the client buys
+
+Hosting for paying clients is still an open founder decision (charter Appendix A, hosting and handover). Ask the founders before connecting a paying client's domain; the steps below are how it is done once they agree.
 
 - Put their domain (e.g. `rosasbakery.com`) alone in a file named `CNAME` at the repo root.
 - Fill `domain` in `business.json`.

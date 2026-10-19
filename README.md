@@ -15,7 +15,8 @@ Starter website every client site is copied from.
 | `assets/css/site.css` | All the styling. Change the two colours at the top to rebrand |
 | `assets/img/` | Logo, favicon and photos |
 | `404.html` | Page shown when a link is wrong |
-| `.github/workflows/check.yml` | Automatic check for broken links on every change |
+| `.github/workflows/check.yml` | Automatic checks on every change: broken links, and the build rules in CLAUDE.md |
+| `tools/site-check.py` | The build-rule checker. Run `python3 tools/site-check.py` before review; `tools/test_site_check.py` tests the checker itself |
 
 ## Starting a new client site
 
