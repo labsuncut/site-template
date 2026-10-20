@@ -23,6 +23,10 @@ def codes(result, level):
     return {f["code"] for f in result["findings"] if f["level"] == level}
 
 
+def messages(result, code):
+    return [f["msg"] for f in result["findings"] if f["code"] == code]
+
+
 def expect(name, cond):
     print(f"{'ok  ' if cond else 'FAIL'} {name}")
     if not cond:
@@ -32,6 +36,13 @@ def expect(name, cond):
 def make_site(tmp, name):
     site = Path(tmp) / name
     shutil.copytree(REPO, site, ignore=shutil.ignore_patterns(".git", "tools", ".github"))
+    return site
+
+
+def make_absolute_site(tmp, name):
+    site = make_site(tmp, name)
+    index = site / "index.html"
+    index.write_text(index.read_text().replace('href="assets/', 'href="/assets/', 1))
     return site
 
 
@@ -97,7 +108,64 @@ with tempfile.TemporaryDirectory() as tmp:
     index.write_text(base.replace('href="assets/', 'href="/assets/', 1))
     (clean / "functions").mkdir()
     r = sc.check(clean)
-    expect("app with functions/ skips the relative-path rule", "absolute-path" not in codes(r, "FAIL") and "app" in codes(r, "INFO"))
+    expect("app with functions/ skips the relative-path rule", "absolute-path" not in codes(r, "FAIL") and "root-hosted" in codes(r, "INFO"))
+
+    # 5. In a JavaScript string a link is written with escaped quotes (\"). That backslash is not part of the number.
+    js_site = make_site(tmp, "site-js-tel")
+    (js_site / "assets" / "js").mkdir()
+    site_js = js_site / "assets" / "js" / "site.js"
+    site_js.write_text(r"""const text = {
+  ar: {call: "Call <a href=\"tel:+96260000000\" dir=\"ltr\">+962 6 000 0000</a> any day"},
+  en: {call: 'Call <a href=\'tel:+96260000000\'>06 000 0000</a>'},
+};
+""")
+    expect("tel link with escaped quotes in a JS string passes", "tel-format" not in codes(sc.check(js_site), "FAIL"))
+
+    site_js.write_text(r'const text = {call: "Call <a href=\"tel:0600000000\">06 000 0000</a>"};')
+    expect("tel number without country code in a JS string is still a FAIL", "tel-format" in codes(sc.check(js_site), "FAIL"))
+
+    site_js.write_text(r'const text = {call: "Call <a href=\"tel:+962 6 000 0000\">+962 6 000 0000</a>"};')
+    expect("tel number with spaces in a JS string is still a FAIL", "tel-format" in codes(sc.check(js_site), "FAIL"))
+
+    # 6. A site served from the root of its own domain may use "/" paths: Cloudflare Pages (functions/ next to public/)
+    #    or a Cloudflare Worker (a wrangler file). A CNAME alone does not count, because GitHub Pages sites have one too.
+    app = Path(tmp) / "app"
+    public = make_absolute_site(app, "public")
+    (app / "functions").mkdir()
+    r = sc.check(public)
+    said = messages(r, "root-hosted")
+    expect("public/ next to functions/ skips the relative-path rule", "absolute-path" not in codes(r, "FAIL"))
+    expect("public/ next to functions/ gets one root-hosted INFO", len(said) == 1 and "functions/" in said[0])
+
+    (app / "functions").rmdir()
+    (app / "wrangler.toml").write_text('name = "app"\n')
+    r = sc.check(public)
+    expect("public/ next to a wrangler file skips the relative-path rule", "absolute-path" not in codes(r, "FAIL") and "root-hosted" in codes(r, "INFO"))
+
+    worker = make_absolute_site(tmp, "site-worker")
+    for name in ("wrangler.toml", "wrangler.json", "wrangler.jsonc"):
+        (worker / name).write_text('name = "site-worker"\n')
+        r = sc.check(worker)
+        expect(f"{name} skips the relative-path rule", "absolute-path" not in codes(r, "FAIL") and "root-hosted" in codes(r, "INFO"))
+        (worker / name).unlink()
+
+    (worker / "wrangler.toml").write_text('name = "site-worker"\n')
+    (worker / "functions").mkdir()
+    expect("functions/ and a wrangler file together give one root-hosted INFO", len(messages(sc.check(worker), "root-hosted")) == 1)
+
+    plain = make_absolute_site(tmp, "site-plain")
+    r = sc.check(plain)
+    expect("plain folder with a / path is still a FAIL", "absolute-path" in codes(r, "FAIL") and "root-hosted" not in codes(r, "INFO"))
+
+    (plain / "CNAME").write_text("plain-site.invalid\n")
+    expect("CNAME alone does not make a site root-hosted", "absolute-path" in codes(sc.check(plain), "FAIL"))
+
+    lone = make_absolute_site(Path(tmp) / "lone", "public")
+    expect("public/ with nothing beside it is still a FAIL", "absolute-path" in codes(sc.check(lone), "FAIL"))
+
+    (Path(tmp) / "beside" / "functions").mkdir(parents=True)
+    other = make_absolute_site(Path(tmp) / "beside", "site")
+    expect("only a folder named public looks one level up", "absolute-path" in codes(sc.check(other), "FAIL"))
 
     expect("command line exits 1 on a FAIL", sc.main([str(site)]) == 1)
     expect("--report always exits 0", sc.main(["--report", str(site)]) == 0)

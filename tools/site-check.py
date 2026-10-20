@@ -26,6 +26,7 @@ TEXT_EXT = {".html", ".htm", ".js", ".mjs", ".json", ".css", ".md", ".txt", ".xm
 PAGE_EXT = {".html", ".htm"}
 IMAGE_EXT = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".avif"}
 SKIP_DIRS = {".git", "node_modules", ".wrangler", "tools", "docs", ".github"}
+WRANGLER_FILES = ("wrangler.toml", "wrangler.json", "wrangler.jsonc")  # Cloudflare Workers settings
 
 # Example business shipped with site-template (CLAUDE.md step 2: none of this may remain).
 LEFTOVERS = [
@@ -86,6 +87,21 @@ def blank_fields(data, prefix=""):
     return out
 
 
+def root_hosted_from(root):
+    # Cloudflare serves a site from the root of its domain when it has a functions/ folder (Pages) or a
+    # wrangler file (Workers). They sit in the site folder, or one level up when the site folder is public/.
+    places = [(root, "")]
+    if root.name == "public":
+        places.append((root.parent, " next to the public/ folder"))
+    for folder, where in places:
+        if (folder / "functions").is_dir():
+            return f"functions/{where}"
+        for name in WRANGLER_FILES:
+            if (folder / name).is_file():
+                return f"{name}{where}"
+    return ""
+
+
 def check(root):
     root = root.resolve()
     findings = []
@@ -100,13 +116,16 @@ def check(root):
             business = json.loads(bj.read_text(encoding="utf-8"))
         except json.JSONDecodeError as e:
             add("FAIL", "business-json", f"business.json is not valid JSON ({e.msg})", f"business.json:{e.lineno}")
-    # A Cloudflare Pages app (functions/ folder) is served from a domain root, so "/" paths are fine there.
+    # With a functions/ folder (an app with a back end) a missing business.json is only a fact, not a warning.
     is_app = (root / "functions").is_dir()
     if not bj.exists():
         add("INFO" if is_app else "WARN", "business-json", "No business.json. CLAUDE.md step 1 keeps every business fact there.")
     is_template = business.get("name") == "Rosa's Bakery"
-    if is_app:
-        add("INFO", "app", "Cloudflare Pages app with a back end (functions/): the relative-path rule is skipped.")
+    # Served from the root of its own domain (Cloudflare): "/" paths are fine. A CNAME alone does not count: a GitHub Pages
+    # copy is served under /<repo-name>/ until its domain is connected, and relative paths work in both places.
+    root_hosted = root_hosted_from(root)
+    if root_hosted:
+        add("INFO", "root-hosted", f'This site is served from the root of its domain (detected from {root_hosted}), so paths starting with "/" are fine here.')
 
     texts = {}
     images = []
@@ -144,13 +163,13 @@ def check(root):
 
         if ext in PAGE_EXT | {".js", ".mjs"}:
             for m in TEL.finditer(text):
-                value = m.group(1)
+                value = m.group(1).rstrip("\\")  # in a JavaScript string the link ends at \" or \'; that backslash is not part of the number
                 if "${" in value or value.endswith("+") or value == "":
                     continue  # built at run time; the browser runner checks the result
                 if not re.fullmatch(r"\+\d{8,15}", value):
                     add("FAIL", "tel-format", f'Phone link "tel:{value}" must be digits only with the country code, e.g. tel:+962791234567', f"{where}:{line_of(text, m.start())}")
 
-        if ext in PAGE_EXT and not is_app:
+        if ext in PAGE_EXT and not root_hosted:
             for m in ABS_PATH.finditer(text):
                 add("FAIL", "absolute-path", f'Path "/{m.group(1)}" starts with "/"; keep paths relative so the preview works under /<repo-name>/', f"{where}:{line_of(text, m.start())}")
         if ext in PAGE_EXT:
