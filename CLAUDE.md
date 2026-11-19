@@ -31,10 +31,11 @@ The stack is plain HTML and CSS with no build step, hosted on GitHub Pages. Keep
 - Check that every link works and the call button dials the right number.
 - Give the preview link: `https://labsuncut.github.io/<repo-name>/`.
 
-## When the client buys
+## Launching on the client's domain
 
-Hosting for paying clients is still an open founder decision (charter Appendix A, hosting and handover). Ask the founders before connecting a paying client's domain; the steps below are how it is done once they agree.
+Connecting the client's real domain is the production launch. Before it, three things must be true: the site has a full Approved on the Staff Dashboard for the exact commit being launched; the client has approved the launch in writing (keep it with the project's records); and the launch is authorized, which means all three founders until the charter's delegation conditions are met. Hosting and handover follow the client's agreement. Ask the founders before connecting any domain; the steps below are how it is done once they agree.
 
 - Put their domain (e.g. `rosasbakery.com`) alone in a file named `CNAME` at the repo root.
 - Fill `domain` in `business.json`.
 - Tell the team the DNS records the client needs at their domain registrar (GitHub Pages docs: "Managing a custom domain").
+- After launch, the public label is "Live trial" until all three founders confirm "Live" on the Staff Dashboard.
